@@ -1,0 +1,2 @@
+cbt: main.cpp
+	g++ -Wall -Werror -std=c++17 -ggdb -o cbt main.cpp

@@ -1,0 +1,8 @@
+topsort.png: topsort.dot
+	dot -Tpng topsort.dot > topsort.png
+
+topsort.dot: topsort
+	./topsort > topsort.dot
+
+topsort: topsort.c
+	gcc -o topsort topsort.c
