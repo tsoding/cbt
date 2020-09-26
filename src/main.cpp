@@ -70,6 +70,14 @@ Maybe<Target> get_target_by_name(Dynamic_Array<Target> targets, String_View name
     return {};
 }
 
+bool file_path_exists(String_View path, String_Buffer *temp_buffer)
+{
+    struct stat statbuf = {};
+    temp_buffer->size = 0;
+    sprint(temp_buffer, path);
+    return stat(temp_buffer->data, &statbuf) == 0;
+}
+
 void build_target(String_View target_name,
                   Dynamic_Array<Target> targets,
                   Dynamic_Array<String_View> *visited,
@@ -77,17 +85,14 @@ void build_target(String_View target_name,
 {
     visited->push(target_name);
 
+    if (file_path_exists(target_name, buffer)) {
+        return;
+    }
+
     auto maybe_target = get_target_by_name(targets, target_name);
     if (!maybe_target.has_value) {
-        struct stat statbuf = {};
-        buffer->size = 0;
-        sprint(buffer, target_name);
-        if (stat(buffer->data, &statbuf) != 0) {
-            println(stderr, "Trying to build non-existing target: `", target_name, "`");
-            exit(1);
-        } else {
-            return;
-        }
+        println(stderr, "Trying to build non-existing target: `", target_name, "`");
+        exit(1);
     }
     auto target = maybe_target.unwrap;
 
