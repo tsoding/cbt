@@ -26,20 +26,17 @@ void graphviz()
     printf("}");
 }
 
-Vertex dfs[N] = {};
-size_t dfs_size = 0;
 int visited[N] = {};
 
 void topsort(Vertex v)
 {
     visited[v] = 1;
-    dfs[dfs_size++] = v;
     for (Vertex u = 0; u < N; ++u) {
         if (!visited[u] && graph[v][u]) {
             topsort(u);
         }
     }
-    result[result_size++] = dfs[--dfs_size];
+    result[result_size++] = v;
 }
 
 int main()
